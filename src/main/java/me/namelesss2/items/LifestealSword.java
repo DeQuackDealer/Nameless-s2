@@ -7,6 +7,9 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeModifier;
+import org.bukkit.inventory.EquipmentSlotGroup;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -22,6 +25,8 @@ public final class LifestealSword {
     public static final double LIFESTEAL_PERCENT = 0.5;
     public static final int HITS_BEFORE_COOLDOWN = 10;
     public static final long COOLDOWN_DURATION_MS = 25000;
+    public static final double ATTACK_DAMAGE = 9.0;
+    public static final double ATTACK_KNOCKBACK = 3.0;
 
     private LifestealSword() {}
 
@@ -43,6 +48,25 @@ public final class LifestealSword {
                 .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
+
+        // Uses vanilla netherite sword model for now
+        // TODO: Add custom model when resource pack is ready
+
+        AttributeModifier damageModifier = new AttributeModifier(
+                new NamespacedKey("nameless_s2", "lifesteal_damage"),
+                ATTACK_DAMAGE,
+                AttributeModifier.Operation.ADD_NUMBER,
+                EquipmentSlotGroup.MAINHAND
+        );
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, damageModifier);
+
+        AttributeModifier knockbackModifier = new AttributeModifier(
+                new NamespacedKey("nameless_s2", "lifesteal_knockback"),
+                ATTACK_KNOCKBACK,
+                AttributeModifier.Operation.ADD_NUMBER,
+                EquipmentSlotGroup.MAINHAND
+        );
+        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_KNOCKBACK, knockbackModifier);
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
         meta.getPersistentDataContainer().set(NamelessS2.LIFESTEAL_HITS_KEY, PersistentDataType.INTEGER, 0);
