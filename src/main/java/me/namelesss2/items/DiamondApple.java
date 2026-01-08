@@ -30,13 +30,37 @@ public final class DiamondApple {
         meta.displayName(displayName);
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Ultra Powerful")
-                .color(NamedTextColor.LIGHT_PURPLE)
-                .decoration(TextDecoration.ITALIC, true));
-        lore.add(Component.text("Grants incredible buffs")
+        lore.add(Component.empty());
+        lore.add(Component.text("Diamond Hearts")
+                .color(NamedTextColor.AQUA)
+                .decoration(TextDecoration.ITALIC, false)
+                .decoration(TextDecoration.BOLD, true));
+        lore.add(Component.text("Grants 3 Diamond Hearts that repair")
                 .color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("100 durability per armor piece when hit")
+                .color(NamedTextColor.GRAY)
+                .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.empty());
+        lore.add(Component.text("Also Grants:")
+                .color(NamedTextColor.WHITE)
+                .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text(" + Regeneration III (10s)")
+                .color(NamedTextColor.LIGHT_PURPLE)
+                .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text(" + Resistance II (60s)")
+                .color(NamedTextColor.BLUE)
+                .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text(" + Strength II (60s)")
+                .color(NamedTextColor.RED)
+                .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text(" + Fire Resistance (60s)")
+                .color(NamedTextColor.GOLD)
+                .decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
+
+        // Uses vanilla enchanted golden apple model for now
+        // TODO: Add custom model when resource pack is ready
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
 
