@@ -39,6 +39,9 @@ public final class SwapRod {
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
 
+        // Uses vanilla fishing rod model for now
+        // TODO: Add custom model when resource pack is ready
+
         ItemUtils.setCustomItem(meta, ITEM_ID);
 
         item.setItemMeta(meta);
