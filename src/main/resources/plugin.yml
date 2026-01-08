@@ -10,3 +10,15 @@ commands:
   custompluginauthor:
     description: Display plugin author information
     usage: /custompluginauthor
+  ns:
+    description: Give custom items
+    usage: /ns <player> <item>
+    permission: namelesss2.give
+
+permissions:
+  namelesss2.give:
+    description: Allows giving custom items
+    default: op
+  namelesss2.reload:
+    description: Allows reloading config
+    default: op
