@@ -1,75 +1,37 @@
 # Nameless-s2
 
-A custom Paper plugin for Minecraft 1.21+ featuring unique custom items and mechanics.
+Custom items plugin for our SMP, built for Paper 1.21+
 
-## Features
+## Items
 
-### Lifesteal Sword
-- Custom sword with Netherite-level stats and Diamond sword damage
-- Heals 50% of damage dealt on hit
-- Enters 25-second cooldown after 10 successful lifesteal hits
-- Crafted with Netherite Ingots and Blaze Rod
-- Repairable with Netherite Ingots
+**Lifesteal Sword** - Netherite sword that heals you for 50% of damage dealt. Goes on cooldown after 10 hits (25s). Craft with 2 Netherite Ingots + Blaze Rod.
 
-### Swap Rod (Boogie Woogie)
-- Custom fishing rod that swaps positions with hooked living entities
-- Plays Enderman teleport sound on successful swap
-- Has Netherite-level durability (2031 uses)
-- Crafted with Netherite Ingots and String
-- Repairable with Netherite Ingots
+**Swap Rod** - Hook an entity and swap positions with them. 5 second cooldown. Craft with 2 Ender Pearls + Fishing Rod.
 
-### Diamond Apple
-- Ultra-powerful consumable item
-- Grants effects stronger than Enchanted Golden Apple:
-  - Absorption IV (5 minutes)
-  - Resistance II (3 minutes)
-  - Regeneration III (45 seconds)
-  - Strength II (3 minutes)
-  - Fire Resistance (10 minutes)
-  - Speed II (2 minutes)
-- Crafted with Diamond Blocks surrounding a Golden Apple
+**Diamond Apple** - Gives you 3 Diamond Hearts that absorb incoming damage. When a heart is fully depleted, it repairs 100 durability to all your armor pieces. Also gives Regen III, Resistance II, Strength II, and Fire Res. Craft with 8 Diamond Blocks around a Golden Apple.
 
-### Spear Progression System
-- Players receive a Wooden Spear on first join
-- Kill players to upgrade your spear through tiers:
-  - Wood → Copper (1 kill)
-  - Copper → Iron (2 kills)
-  - Iron → Diamond (3 kills)
-  - Diamond → Netherite (4 kills)
-- Death causes spear downgrade by one tier
-- Each tier has appropriate durability and can be repaired with matching materials
+**Spear** - Given on first join. Kill players to upgrade it: Wood > Copper > Iron > Diamond > Netherite. Die and it downgrades.
 
 ## Commands
 
-- `/custompluginauthor` - Display plugin author information
+`/custompluginauthor` - Plugin info  
+`/custompluginauthor items` - Item list  
+`/custompluginauthor reload` - Reload config
 
-## Requirements
+## Setup
 
-- Paper 1.21+
-- Java 21
+Drop the jar in plugins folder, restart server. Edit config.yml to tweak values.
 
-## Installation
+## Build
 
-1. Download the latest release from [Releases](https://github.com/DeQuackDealer/Nameless-s2/releases)
-2. Place the JAR file in your server's `plugins` folder
-3. Restart your server
-
-## Building
-
-```bash
+```
 mvn clean package
 ```
 
-The compiled JAR will be in the `target` folder.
+## Contact
 
-## License
+Made by DeQuackDealer  
+Discord: dequackdea1er  
+GitHub: https://github.com/DeQuackDealer
 
-MIT License - see [LICENSE](LICENSE) for details.
-
-## Author
-
-**DeQuackDealer**
-- GitHub: https://github.com/DeQuackDealer
-- Discord: dequackdea1er
-
-Open for hire! Message me on Discord!
+Open for commissions!
