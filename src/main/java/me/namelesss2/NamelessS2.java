@@ -1,6 +1,7 @@
 package me.namelesss2;
 
 import me.namelesss2.commands.CreditCommand;
+import me.namelesss2.commands.GiveCommand;
 import me.namelesss2.items.DiamondApple;
 import me.namelesss2.items.LifestealSword;
 import me.namelesss2.items.Spear;
@@ -10,6 +11,7 @@ import me.namelesss2.listeners.LifestealSwordListener;
 import me.namelesss2.listeners.PlayerJoinListener;
 import me.namelesss2.listeners.SpearListener;
 import me.namelesss2.listeners.SwapRodListener;
+import me.namelesss2.managers.DiamondHeartsManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -27,15 +29,21 @@ public final class NamelessS2 extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
+        saveDefaultConfig();
+
         registerRecipes();
         registerListeners();
         registerCommands();
 
-        getLogger().info("Nameless-s2 has been enabled!");
+        getLogger().info("=================================");
+        getLogger().info("Nameless-s2 v" + getDescription().getVersion());
+        getLogger().info("Season 2 Custom Items Loaded!");
+        getLogger().info("=================================");
     }
 
     @Override
     public void onDisable() {
+        DiamondHeartsManager.getInstance().clearAll();
         getLogger().info("Nameless-s2 has been disabled!");
     }
 
@@ -54,7 +62,13 @@ public final class NamelessS2 extends JavaPlugin {
     }
 
     private void registerCommands() {
-        getCommand("custompluginauthor").setExecutor(new CreditCommand());
+        CreditCommand creditCommand = new CreditCommand();
+        getCommand("custompluginauthor").setExecutor(creditCommand);
+        getCommand("custompluginauthor").setTabCompleter(creditCommand);
+
+        GiveCommand giveCommand = new GiveCommand();
+        getCommand("ns").setExecutor(giveCommand);
+        getCommand("ns").setTabCompleter(giveCommand);
     }
 
     public static NamelessS2 getInstance() {
