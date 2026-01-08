@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -48,10 +47,6 @@ public final class LifestealSword {
         ItemUtils.setCustomItem(meta, ITEM_ID);
         meta.getPersistentDataContainer().set(NamelessS2.LIFESTEAL_HITS_KEY, PersistentDataType.INTEGER, 0);
         meta.getPersistentDataContainer().set(NamelessS2.LIFESTEAL_COOLDOWN_KEY, PersistentDataType.LONG, 0L);
-
-        if (meta instanceof Damageable damageable) {
-            damageable.setMaxDamage(MAX_DURABILITY);
-        }
 
         item.setItemMeta(meta);
         return item;
