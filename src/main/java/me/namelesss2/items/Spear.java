@@ -17,6 +17,7 @@ import java.util.List;
 public final class Spear {
 
     public static final String ITEM_ID = "custom_spear";
+    public static final NamespacedKey MAX_DURABILITY_KEY = new org.bukkit.NamespacedKey("nameless_s2", "spear_max_durability");
 
     public enum Tier {
         WOOD(0, "Wooden Spear", NamedTextColor.GOLD, 250, Material.OAK_PLANKS, 1),
@@ -141,9 +142,9 @@ public final class Spear {
         ItemUtils.setCustomItem(meta, ITEM_ID);
         meta.getPersistentDataContainer().set(NamelessS2.SPEAR_TIER_KEY, PersistentDataType.INTEGER, tier.getOrdinalValue());
         meta.getPersistentDataContainer().set(NamelessS2.SPEAR_KILLS_KEY, PersistentDataType.INTEGER, kills);
+        meta.getPersistentDataContainer().set(MAX_DURABILITY_KEY, PersistentDataType.INTEGER, tier.getDurability());
 
         if (meta instanceof Damageable damageable) {
-            damageable.setMaxDamage(tier.getDurability());
             damageable.setDamage(0);
         }
 
@@ -179,5 +180,9 @@ public final class Spear {
 
     public static int getKills(ItemStack item) {
         return ItemUtils.getIntData(item, NamelessS2.SPEAR_KILLS_KEY, 0);
+    }
+
+    public static int getMaxDurability(ItemStack item) {
+        return ItemUtils.getIntData(item, MAX_DURABILITY_KEY, Material.TRIDENT.getMaxDurability());
     }
 }
