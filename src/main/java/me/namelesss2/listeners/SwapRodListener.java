@@ -47,7 +47,7 @@ public class SwapRodListener implements Listener {
             ItemMeta meta = rod.getItemMeta();
             if (meta instanceof Damageable damageable) {
                 int currentDamage = damageable.getDamage();
-                int maxDamage = damageable.hasMaxDamage() ? damageable.getMaxDamage() : SwapRod.MAX_DURABILITY;
+                int maxDamage = SwapRod.MAX_DURABILITY;
 
                 if (currentDamage + 1 >= maxDamage) {
                     player.getInventory().remove(rod);
