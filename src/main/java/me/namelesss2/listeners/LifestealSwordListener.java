@@ -46,7 +46,7 @@ public class LifestealSwordListener implements Listener {
         double damage = event.getFinalDamage();
         double healAmount = damage * LifestealSword.LIFESTEAL_PERCENT;
 
-        double maxHealth = player.getAttribute(Attribute.MAX_HEALTH).getValue();
+        double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
         double newHealth = Math.min(player.getHealth() + healAmount, maxHealth);
         player.setHealth(newHealth);
 
