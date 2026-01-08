@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -41,10 +40,6 @@ public final class SwapRod {
         meta.lore(lore);
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
-
-        if (meta instanceof Damageable damageable) {
-            damageable.setMaxDamage(MAX_DURABILITY);
-        }
 
         item.setItemMeta(meta);
         return item;
