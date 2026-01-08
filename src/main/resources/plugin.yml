@@ -1,0 +1,12 @@
+name: Nameless-s2
+version: '${project.version}'
+main: me.namelesss2.NamelessS2
+api-version: '1.21'
+author: DeQuackDealer
+description: A custom Paper plugin featuring Lifesteal Sword, Swap Rod, Diamond Apple, and Spear progression system
+website: https://github.com/DeQuackDealer
+
+commands:
+  custompluginauthor:
+    description: Display plugin author information
+    usage: /custompluginauthor
