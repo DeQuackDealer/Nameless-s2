@@ -20,8 +20,6 @@ public final class NamelessS2 extends JavaPlugin {
     private static NamelessS2 instance;
 
     public static final NamespacedKey CUSTOM_ITEM_KEY = new NamespacedKey("nameless_s2", "custom_item");
-    public static final NamespacedKey LIFESTEAL_HITS_KEY = new NamespacedKey("nameless_s2", "lifesteal_hits");
-    public static final NamespacedKey LIFESTEAL_COOLDOWN_KEY = new NamespacedKey("nameless_s2", "lifesteal_cooldown");
     public static final NamespacedKey SPEAR_TIER_KEY = new NamespacedKey("nameless_s2", "spear_tier");
     public static final NamespacedKey SPEAR_KILLS_KEY = new NamespacedKey("nameless_s2", "spear_kills");
 
