@@ -21,7 +21,7 @@ public final class SwapRod {
     private SwapRod() {}
 
     public static ItemStack create() {
-        ItemStack item = new ItemStack(Material.BLAZE_ROD);
+        ItemStack item = new ItemStack(Material.WARPED_FUNGUS_ON_A_STICK);
         ItemMeta meta = item.getItemMeta();
 
         Component displayName = Component.text("Swap Rod")
@@ -40,6 +40,9 @@ public final class SwapRod {
         lore.add(Component.text("to swap positions with them")
                 .color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("Requires line of sight")
+                .color(NamedTextColor.DARK_GRAY)
+                .decoration(TextDecoration.ITALIC, true));
         meta.lore(lore);
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
