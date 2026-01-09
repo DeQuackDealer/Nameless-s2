@@ -7,13 +7,16 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class Spear {
 
@@ -21,25 +24,23 @@ public final class Spear {
     public static final NamespacedKey MAX_DURABILITY_KEY = new NamespacedKey("nameless_s2", "spear_max_durability");
 
     public enum Tier {
-        WOOD(0, "Wooden Spear", NamedTextColor.GOLD, Material.WOODEN_SWORD, 250, Material.OAK_PLANKS, 1),
-        COPPER(1, "Copper Spear", NamedTextColor.GOLD, Material.STONE_SWORD, 250, Material.COPPER_INGOT, 2),
-        IRON(2, "Iron Spear", NamedTextColor.WHITE, Material.IRON_SWORD, 250, Material.IRON_INGOT, 3),
-        DIAMOND(3, "Diamond Spear", NamedTextColor.AQUA, Material.DIAMOND_SWORD, 1561, Material.DIAMOND, 4),
-        NETHERITE(4, "Netherite Spear", NamedTextColor.DARK_RED, Material.NETHERITE_SWORD, 2031, Material.NETHERITE_INGOT, -1);
+        WOOD(0, "Wooden Spear", NamedTextColor.GOLD, 250, Material.OAK_PLANKS, 1),
+        COPPER(1, "Copper Spear", NamedTextColor.GOLD, 250, Material.COPPER_INGOT, 2),
+        IRON(2, "Iron Spear", NamedTextColor.WHITE, 250, Material.IRON_INGOT, 3),
+        DIAMOND(3, "Diamond Spear", NamedTextColor.AQUA, 1561, Material.DIAMOND, 4),
+        NETHERITE(4, "Netherite Spear", NamedTextColor.DARK_RED, 2031, Material.NETHERITE_INGOT, -1);
 
         private final int ordinalValue;
         private final String displayName;
         private final NamedTextColor color;
-        private final Material material;
         private final int durability;
         private final Material repairMaterial;
         private final int killsToUpgrade;
 
-        Tier(int ordinalValue, String displayName, NamedTextColor color, Material material, int durability, Material repairMaterial, int killsToUpgrade) {
+        Tier(int ordinalValue, String displayName, NamedTextColor color, int durability, Material repairMaterial, int killsToUpgrade) {
             this.ordinalValue = ordinalValue;
             this.displayName = displayName;
             this.color = color;
-            this.material = material;
             this.durability = durability;
             this.repairMaterial = repairMaterial;
             this.killsToUpgrade = killsToUpgrade;
@@ -48,7 +49,6 @@ public final class Spear {
         public int getOrdinalValue() { return ordinalValue; }
         public String getDisplayName() { return displayName; }
         public NamedTextColor getColor() { return color; }
-        public Material getMaterial() { return material; }
         public int getDurability() { return durability; }
         public Material getRepairMaterial() { return repairMaterial; }
         public int getKillsToUpgrade() { return killsToUpgrade; }
@@ -84,19 +84,31 @@ public final class Spear {
     private Spear() {}
 
     public static ItemStack create(Tier tier) {
-        ItemStack item = new ItemStack(tier.getMaterial());
+        ItemStack item = new ItemStack(Material.TRIDENT);
         updateSpear(item, tier, 0);
         return item;
     }
 
-    public static ItemStack upgrade(ItemStack oldSpear, Tier newTier, int kills) {
-        ItemStack newSpear = new ItemStack(newTier.getMaterial());
-        updateSpear(newSpear, newTier, kills);
-        return newSpear;
+    public static ShapedRecipe getWoodenSpearRecipe() {
+        ItemStack result = create(Tier.WOOD);
+        NamespacedKey key = new NamespacedKey("nameless_s2", "wooden_spear_recipe");
+        ShapedRecipe recipe = new ShapedRecipe(key, result);
+
+        recipe.shape(
+                "  D",
+                " S ",
+                "S  "
+        );
+
+        recipe.setIngredient('D', Material.DIAMOND);
+        recipe.setIngredient('S', Material.STICK);
+
+        return recipe;
     }
 
     public static void updateSpear(ItemStack item, Tier tier, int kills) {
-        item.setType(tier.getMaterial());
+        Map<Enchantment, Integer> enchants = item.getEnchantments();
+        
         ItemMeta meta = item.getItemMeta();
         if (meta == null) return;
 
@@ -140,6 +152,10 @@ public final class Spear {
         }
 
         item.setItemMeta(meta);
+        
+        for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
+            item.addUnsafeEnchantment(entry.getKey(), entry.getValue());
+        }
     }
 
     private static String formatMaterialName(Material material) {
@@ -171,6 +187,6 @@ public final class Spear {
     }
 
     public static int getMaxDurability(ItemStack item) {
-        return ItemUtils.getIntData(item, MAX_DURABILITY_KEY, Material.WOODEN_SWORD.getMaxDurability());
+        return ItemUtils.getIntData(item, MAX_DURABILITY_KEY, 250);
     }
 }
