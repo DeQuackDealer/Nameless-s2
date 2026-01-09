@@ -76,3 +76,4 @@ public final class NamelessS2 extends JavaPlugin {
         return instance;
     }
 }
+
