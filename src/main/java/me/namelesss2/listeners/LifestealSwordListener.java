@@ -4,6 +4,7 @@ import me.namelesss2.NamelessS2;
 import me.namelesss2.items.LifestealSword;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.attribute.Attribute;
@@ -17,15 +18,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.UUID;
-
 public class LifestealSwordListener implements Listener {
 
-    private static final String LIFESTEAL_MODIFIER_NAME = "lifesteal_bonus_health";
-
-    private UUID getPlayerModifierUUID(Player player) {
-        return new UUID(player.getUniqueId().getMostSignificantBits(), 
-                        player.getUniqueId().getLeastSignificantBits() ^ 0xDEADBEEFL);
+    private NamespacedKey getPlayerModifierKey(Player player) {
+        String playerKeyPart = player.getUniqueId().toString().replace("-", "_");
+        return new NamespacedKey("nameless_s2", "lifesteal_health_" + playerKeyPart);
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -53,12 +50,12 @@ public class LifestealSwordListener implements Listener {
             return;
         }
 
-        UUID modifierUUID = getPlayerModifierUUID(killer);
+        NamespacedKey modifierKey = getPlayerModifierKey(killer);
         double currentBonus = 0.0;
         AttributeModifier existingModifier = null;
         
         for (AttributeModifier modifier : maxHealthAttr.getModifiers()) {
-            if (modifier.getUniqueId().equals(modifierUUID)) {
+            if (modifier.getKey().equals(modifierKey)) {
                 currentBonus = modifier.getAmount();
                 existingModifier = modifier;
                 break;
@@ -78,8 +75,7 @@ public class LifestealSwordListener implements Listener {
         }
 
         AttributeModifier newModifier = new AttributeModifier(
-                modifierUUID,
-                LIFESTEAL_MODIFIER_NAME,
+                modifierKey,
                 newBonus,
                 AttributeModifier.Operation.ADD_NUMBER
         );
