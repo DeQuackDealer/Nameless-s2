@@ -3,15 +3,15 @@
 
 # Lifesteal Sword
 lifesteal-sword:
-  lifesteal-percent: 0.5
-  hits-before-cooldown: 10
-  cooldown-duration-seconds: 25
+  hearts-per-kill: 1.0
+  max-bonus-hearts: 10.0
   attack-damage: 9.0
   attack-knockback: 3.0
 
 # Swap Rod
 swap-rod:
   cooldown-seconds: 5
+  durability: 2031
 
 # Diamond Apple
 diamond-apple:
@@ -21,7 +21,7 @@ diamond-apple:
   regeneration-duration-seconds: 10
   resistance-duration-seconds: 60
   fire-resistance-duration-seconds: 60
-  strength-duration-seconds: 60
+  strength-duration-seconds: 30
 
 # Spear tiers
 spear:
@@ -42,7 +42,7 @@ spear:
 
 # Customizable messages
 messages:
-  lifesteal-cooldown: "Lifesteal is now on cooldown for %seconds% seconds!"
+  lifesteal-kill: "You gained a permanent heart from slaying %victim%!"
   swap-success: "Swapped positions!"
   spear-upgrade: "Your spear has been upgraded to %tier%!"
   spear-downgrade: "Your spear has been downgraded to %tier%!"
