@@ -20,7 +20,7 @@ public final class DiamondApple {
     private DiamondApple() {}
 
     public static ItemStack create() {
-        ItemStack item = new ItemStack(Material.ENCHANTED_GOLDEN_APPLE);
+        ItemStack item = new ItemStack(Material.GOLDEN_APPLE);
         ItemMeta meta = item.getItemMeta();
 
         Component displayName = Component.text("Diamond Apple")
@@ -58,9 +58,6 @@ public final class DiamondApple {
                 .color(NamedTextColor.GOLD)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
-
-        // Uses vanilla enchanted golden apple model for now
-        // TODO: Add custom model when resource pack is ready
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
 
