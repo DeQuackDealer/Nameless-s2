@@ -10,10 +10,12 @@ import org.bukkit.Particle;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
@@ -21,6 +23,24 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class SpearListener implements Listener {
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onProjectileLaunch(ProjectileLaunchEvent event) {
+        if (!(event.getEntity() instanceof Trident trident)) {
+            return;
+        }
+
+        if (!(trident.getShooter() instanceof Player player)) {
+            return;
+        }
+
+        ItemStack mainHand = player.getInventory().getItemInMainHand();
+        ItemStack offHand = player.getInventory().getItemInOffHand();
+
+        if (Spear.isSpear(mainHand) || Spear.isSpear(offHand)) {
+            event.setCancelled(true);
+        }
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerKill(PlayerDeathEvent event) {
