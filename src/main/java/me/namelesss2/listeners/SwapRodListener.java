@@ -68,7 +68,8 @@ public class SwapRodListener implements Listener {
         }
 
         double maxDistance = config.getDouble("swap-rod.max-distance", MAX_DISTANCE);
-        RayTraceResult result = player.getWorld().rayTraceEntities(
+        
+        RayTraceResult entityResult = player.getWorld().rayTraceEntities(
                 player.getEyeLocation(),
                 player.getEyeLocation().getDirection(),
                 maxDistance,
@@ -76,14 +77,33 @@ public class SwapRodListener implements Listener {
                 entity -> entity instanceof LivingEntity && !entity.equals(player)
         );
 
-        if (result == null || result.getHitEntity() == null) {
+        if (entityResult == null || entityResult.getHitEntity() == null) {
             player.sendActionBar(Component.text("No target found!")
                     .color(NamedTextColor.RED));
             player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.3f, 0.5f);
             return;
         }
 
-        Entity target = result.getHitEntity();
+        Entity target = entityResult.getHitEntity();
+        double distanceToTarget = player.getEyeLocation().distance(target.getLocation().add(0, 1, 0));
+
+        RayTraceResult blockResult = player.getWorld().rayTraceBlocks(
+                player.getEyeLocation(),
+                player.getEyeLocation().getDirection(),
+                distanceToTarget,
+                FluidCollisionMode.NEVER,
+                true
+        );
+
+        if (blockResult != null && blockResult.getHitBlock() != null) {
+            double blockDistance = player.getEyeLocation().distance(blockResult.getHitPosition().toLocation(player.getWorld()));
+            if (blockDistance < distanceToTarget) {
+                player.sendActionBar(Component.text("Target blocked by obstacle!")
+                        .color(NamedTextColor.RED));
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.3f, 0.5f);
+                return;
+            }
+        }
 
         Location playerLoc = player.getLocation().clone();
         Location targetLoc = target.getLocation().clone();
