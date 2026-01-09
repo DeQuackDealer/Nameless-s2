@@ -41,11 +41,8 @@ public final class LifestealSword {
         meta.displayName(displayName);
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Heals 50% of damage dealt")
+        lore.add(Component.text("Grants permanent hearts on player kills")
                 .color(NamedTextColor.GRAY)
-                .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Cooldown after 10 hits")
-                .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
 
@@ -69,8 +66,6 @@ public final class LifestealSword {
         meta.addAttributeModifier(Attribute.GENERIC_ATTACK_KNOCKBACK, knockbackModifier);
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
-        meta.getPersistentDataContainer().set(NamelessS2.LIFESTEAL_HITS_KEY, PersistentDataType.INTEGER, 0);
-        meta.getPersistentDataContainer().set(NamelessS2.LIFESTEAL_COOLDOWN_KEY, PersistentDataType.LONG, 0L);
 
         item.setItemMeta(meta);
         return item;
