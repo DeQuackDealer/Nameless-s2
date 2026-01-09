@@ -51,6 +51,7 @@ public final class NamelessS2 extends JavaPlugin {
         getServer().addRecipe(LifestealSword.getRecipe());
         getServer().addRecipe(SwapRod.getRecipe());
         getServer().addRecipe(DiamondApple.getRecipe());
+        getServer().addRecipe(Spear.getWoodenSpearRecipe());
     }
 
     private void registerListeners() {
