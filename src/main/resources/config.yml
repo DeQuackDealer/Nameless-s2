@@ -12,6 +12,8 @@ lifesteal-sword:
 swap-rod:
   cooldown-seconds: 5
   durability: 2031
+  max-distance: 256.0
+  sound-volume: 0.3
 
 # Diamond Apple
 diamond-apple:
