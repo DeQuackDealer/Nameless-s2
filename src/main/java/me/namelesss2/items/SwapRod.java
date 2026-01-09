@@ -21,7 +21,7 @@ public final class SwapRod {
     private SwapRod() {}
 
     public static ItemStack create() {
-        ItemStack item = new ItemStack(Material.FISHING_ROD);
+        ItemStack item = new ItemStack(Material.BLAZE_ROD);
         ItemMeta meta = item.getItemMeta();
 
         Component displayName = Component.text("Swap Rod")
@@ -34,13 +34,13 @@ public final class SwapRod {
         lore.add(Component.text("Boogie Woogie!")
                 .color(NamedTextColor.LIGHT_PURPLE)
                 .decoration(TextDecoration.ITALIC, true));
-        lore.add(Component.text("Swap positions with hooked entities")
+        lore.add(Component.text("Right-click while looking at an entity")
+                .color(NamedTextColor.GRAY)
+                .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("to swap positions with them")
                 .color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
-
-        // Uses vanilla fishing rod model for now
-        // TODO: Add custom model when resource pack is ready
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
 
@@ -55,12 +55,12 @@ public final class SwapRod {
 
         recipe.shape(
                 "  N",
-                " NS",
-                "N S"
+                " B ",
+                "N  "
         );
 
         recipe.setIngredient('N', Material.NETHERITE_INGOT);
-        recipe.setIngredient('S', Material.STRING);
+        recipe.setIngredient('B', Material.BLAZE_ROD);
 
         return recipe;
     }
