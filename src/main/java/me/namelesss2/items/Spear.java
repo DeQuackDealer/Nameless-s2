@@ -139,6 +139,9 @@ public final class Spear {
         lore.add(Component.text("Repair with: " + formatMaterialName(tier.getRepairMaterial()))
                 .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
+        lore.add(Component.text("Melee only - cannot be thrown")
+                .color(NamedTextColor.DARK_GRAY)
+                .decoration(TextDecoration.ITALIC, true));
 
         meta.lore(lore);
 
