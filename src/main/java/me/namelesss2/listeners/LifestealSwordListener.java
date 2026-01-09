@@ -21,8 +21,12 @@ import java.util.UUID;
 
 public class LifestealSwordListener implements Listener {
 
-    private static final UUID LIFESTEAL_MODIFIER_UUID = UUID.fromString("a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d");
     private static final String LIFESTEAL_MODIFIER_NAME = "lifesteal_bonus_health";
+
+    private UUID getPlayerModifierUUID(Player player) {
+        return new UUID(player.getUniqueId().getMostSignificantBits(), 
+                        player.getUniqueId().getLeastSignificantBits() ^ 0xDEADBEEFL);
+    }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerKill(PlayerDeathEvent event) {
@@ -49,10 +53,12 @@ public class LifestealSwordListener implements Listener {
             return;
         }
 
+        UUID modifierUUID = getPlayerModifierUUID(killer);
         double currentBonus = 0.0;
         AttributeModifier existingModifier = null;
+        
         for (AttributeModifier modifier : maxHealthAttr.getModifiers()) {
-            if (LIFESTEAL_MODIFIER_NAME.equals(modifier.getName())) {
+            if (modifier.getUniqueId().equals(modifierUUID)) {
                 currentBonus = modifier.getAmount();
                 existingModifier = modifier;
                 break;
@@ -72,7 +78,7 @@ public class LifestealSwordListener implements Listener {
         }
 
         AttributeModifier newModifier = new AttributeModifier(
-                LIFESTEAL_MODIFIER_UUID,
+                modifierUUID,
                 LIFESTEAL_MODIFIER_NAME,
                 newBonus,
                 AttributeModifier.Operation.ADD_NUMBER
