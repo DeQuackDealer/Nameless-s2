@@ -19,6 +19,8 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.UUID;
+
 public class DiamondAppleListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -30,6 +32,7 @@ public class DiamondAppleListener implements Listener {
         }
 
         Player player = event.getPlayer();
+        UUID playerUUID = player.getUniqueId();
         FileConfiguration config = NamelessS2.getInstance().getConfig();
 
         int diamondHearts = config.getInt("diamond-apple.diamond-hearts.amount", 3);
@@ -42,15 +45,20 @@ public class DiamondAppleListener implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                player.removePotionEffect(PotionEffectType.ABSORPTION);
-                player.removePotionEffect(PotionEffectType.REGENERATION);
+                Player p = NamelessS2.getInstance().getServer().getPlayer(playerUUID);
+                if (p == null || !p.isOnline()) {
+                    return;
+                }
+                
+                p.removePotionEffect(PotionEffectType.ABSORPTION);
+                p.removePotionEffect(PotionEffectType.REGENERATION);
                 
                 int regenDuration = config.getInt("diamond-apple.regeneration-duration-seconds", 10) * 20;
                 int resistDuration = config.getInt("diamond-apple.resistance-duration-seconds", 60) * 20;
                 int fireResDuration = config.getInt("diamond-apple.fire-resistance-duration-seconds", 60) * 20;
                 int strengthDuration = config.getInt("diamond-apple.strength-duration-seconds", 60) * 20;
 
-                player.addPotionEffect(new PotionEffect(
+                p.addPotionEffect(new PotionEffect(
                         PotionEffectType.RESISTANCE,
                         resistDuration,
                         1,
@@ -59,7 +67,7 @@ public class DiamondAppleListener implements Listener {
                         true
                 ));
 
-                player.addPotionEffect(new PotionEffect(
+                p.addPotionEffect(new PotionEffect(
                         PotionEffectType.REGENERATION,
                         regenDuration,
                         2,
@@ -68,7 +76,7 @@ public class DiamondAppleListener implements Listener {
                         true
                 ));
 
-                player.addPotionEffect(new PotionEffect(
+                p.addPotionEffect(new PotionEffect(
                         PotionEffectType.STRENGTH,
                         strengthDuration,
                         1,
@@ -77,7 +85,7 @@ public class DiamondAppleListener implements Listener {
                         true
                 ));
 
-                player.addPotionEffect(new PotionEffect(
+                p.addPotionEffect(new PotionEffect(
                         PotionEffectType.FIRE_RESISTANCE,
                         fireResDuration,
                         0,
