@@ -10,7 +10,7 @@
     <packaging>jar</packaging>
 
     <name>Nameless-s2</name>
-    <description>A custom Paper plugin featuring Lifesteal Sword, Swap Rod, Diamond Apple, and Spear progression system</description>
+    <description>Season 2 Custom Items - Lifesteal Sword, Swap Rod, Diamond Apple, and Spear</description>
     <url>https://github.com/DeQuackDealer/Nameless-s2</url>
 
     <properties>
