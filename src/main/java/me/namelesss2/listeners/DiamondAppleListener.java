@@ -17,6 +17,8 @@ import java.util.UUID;
 
 public class DiamondAppleListener implements Listener {
 
+    private static final double ABSORPTION_HEARTS = 8.0;
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
@@ -38,17 +40,10 @@ public class DiamondAppleListener implements Listener {
                     return;
                 }
                 
-                p.removePotionEffect(PotionEffectType.ABSORPTION);
                 p.removePotionEffect(PotionEffectType.REGENERATION);
 
-                p.addPotionEffect(new PotionEffect(
-                        PotionEffectType.ABSORPTION,
-                        9600,
-                        3,
-                        false,
-                        true,
-                        true
-                ));
+                double currentAbsorption = p.getAbsorptionAmount();
+                p.setAbsorptionAmount(currentAbsorption + (ABSORPTION_HEARTS * 2.0));
 
                 p.addPotionEffect(new PotionEffect(
                         PotionEffectType.REGENERATION,
