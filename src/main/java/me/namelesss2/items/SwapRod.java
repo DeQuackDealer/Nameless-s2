@@ -10,9 +10,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public final class SwapRod {
 
     public static final String ITEM_ID = "swap_rod";
@@ -26,24 +23,8 @@ public final class SwapRod {
 
         Component displayName = Component.text("Swap Rod")
                 .color(NamedTextColor.DARK_PURPLE)
-                .decoration(TextDecoration.ITALIC, false)
-                .decoration(TextDecoration.BOLD, true);
+                .decoration(TextDecoration.ITALIC, false);
         meta.displayName(displayName);
-
-        List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Boogie Woogie!")
-                .color(NamedTextColor.LIGHT_PURPLE)
-                .decoration(TextDecoration.ITALIC, true));
-        lore.add(Component.text("Right-click while looking at an entity")
-                .color(NamedTextColor.GRAY)
-                .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("to swap positions with them")
-                .color(NamedTextColor.GRAY)
-                .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Requires line of sight")
-                .color(NamedTextColor.DARK_GRAY)
-                .decoration(TextDecoration.ITALIC, true));
-        meta.lore(lore);
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
 
