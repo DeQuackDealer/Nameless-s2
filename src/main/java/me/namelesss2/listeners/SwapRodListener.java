@@ -1,6 +1,5 @@
 package me.namelesss2.listeners;
 
-import me.namelesss2.NamelessS2;
 import me.namelesss2.items.SwapRod;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -8,7 +7,6 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -31,7 +29,8 @@ import java.util.UUID;
 public class SwapRodListener implements Listener {
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private static final double MAX_DISTANCE = 256.0;
+    private static final double MAX_DISTANCE = 16.0;
+    private static final long COOLDOWN_MS = 1000L;
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -52,27 +51,17 @@ public class SwapRodListener implements Listener {
 
         event.setCancelled(true);
 
-        FileConfiguration config = NamelessS2.getInstance().getConfig();
-        int cooldownSeconds = config.getInt("swap-rod.cooldown-seconds", 5);
-        long cooldownMs = cooldownSeconds * 1000L;
-
         long currentTime = System.currentTimeMillis();
         Long lastUse = cooldowns.get(player.getUniqueId());
 
-        if (lastUse != null && currentTime - lastUse < cooldownMs) {
-            long remaining = (cooldownMs - (currentTime - lastUse)) / 1000 + 1;
-            player.sendActionBar(Component.text("Swap Rod on cooldown: " + remaining + "s")
-                    .color(NamedTextColor.RED));
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASS, 0.3f, 0.5f);
+        if (lastUse != null && currentTime - lastUse < COOLDOWN_MS) {
             return;
         }
 
-        double maxDistance = config.getDouble("swap-rod.max-distance", MAX_DISTANCE);
-        
         RayTraceResult entityResult = player.getWorld().rayTraceEntities(
                 player.getEyeLocation(),
                 player.getEyeLocation().getDirection(),
-                maxDistance,
+                MAX_DISTANCE,
                 0.5,
                 entity -> entity instanceof LivingEntity && !entity.equals(player)
         );
@@ -114,13 +103,8 @@ public class SwapRodListener implements Listener {
         player.teleport(targetLoc);
         target.teleport(playerLoc);
 
-        float soundVolume = (float) config.getDouble("swap-rod.sound-volume", 0.3);
-        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, soundVolume, 1.0f);
-        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, soundVolume, 1.0f);
-
-        String swapMessage = config.getString("messages.swap-success", "Swapped positions!");
-        player.sendMessage(Component.text(swapMessage)
-                .color(NamedTextColor.GOLD));
+        player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.3f, 1.0f);
+        target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.3f, 1.0f);
 
         cooldowns.put(player.getUniqueId(), currentTime);
 
