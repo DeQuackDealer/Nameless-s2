@@ -8,7 +8,6 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
@@ -16,9 +15,12 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.PrepareAnvilEvent;
+import org.bukkit.event.inventory.PrepareSmithingEvent;
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.SmithingInventory;
 import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -42,6 +44,25 @@ public class SpearListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onCraftSpear(CraftItemEvent event) {
+        ItemStack result = event.getRecipe().getResult();
+        
+        if (!Spear.isSpear(result)) {
+            return;
+        }
+
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
+
+        if (hasSpear(player)) {
+            event.setCancelled(true);
+            player.sendMessage(Component.text("You can only have one spear at a time!")
+                    .color(NamedTextColor.RED));
+        }
+    }
+
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onPlayerKill(PlayerDeathEvent event) {
         Player victim = event.getEntity();
@@ -56,23 +77,26 @@ public class SpearListener implements Listener {
             return;
         }
 
-        FileConfiguration config = NamelessS2.getInstance().getConfig();
         Spear.Tier currentTier = Spear.getTier(spear);
+        
+        if (currentTier.getNextTier() == null) {
+            return;
+        }
+
         int currentKills = Spear.getKills(spear) + 1;
+        int killsNeeded = currentTier.getKillsToUpgrade();
 
-        int killsNeeded = getKillsToUpgrade(config, currentTier);
-
-        if (currentTier.getNextTier() != null && currentKills >= killsNeeded) {
+        if (currentKills >= killsNeeded) {
             Spear.Tier newTier = currentTier.getNextTier();
             Spear.updateSpear(spear, newTier, 0);
 
-            String upgradeMessage = config.getString("messages.spear-upgrade", 
-                    "Your spear has been upgraded to %tier%!");
-            upgradeMessage = upgradeMessage.replace("%tier%", newTier.getDisplayName());
-
-            killer.sendMessage(Component.text(upgradeMessage)
+            killer.sendMessage(Component.text("Your spear has been upgraded to ")
                     .color(NamedTextColor.GREEN)
-                    .decoration(TextDecoration.BOLD, true));
+                    .append(Component.text(newTier.getDisplayName())
+                            .color(newTier.getColor())
+                            .decoration(TextDecoration.BOLD, true))
+                    .append(Component.text("!")
+                            .color(NamedTextColor.GREEN)));
 
             killer.playSound(killer.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0f, 1.0f);
             killer.getWorld().spawnParticle(Particle.TOTEM_OF_UNDYING, 
@@ -80,28 +104,16 @@ public class SpearListener implements Listener {
         } else {
             Spear.updateSpear(spear, currentTier, currentKills);
 
-            if (currentTier.getNextTier() != null) {
-                killer.sendMessage(Component.text("Spear Progress: ")
-                        .color(NamedTextColor.GRAY)
-                        .append(Component.text(currentKills + "/" + killsNeeded)
-                                .color(NamedTextColor.YELLOW)
-                                .decoration(TextDecoration.BOLD, true))
-                        .append(Component.text(" kills")
-                                .color(NamedTextColor.GRAY)));
-            }
+            killer.sendMessage(Component.text("Spear Progress: ")
+                    .color(NamedTextColor.GRAY)
+                    .append(Component.text(currentKills + "/" + killsNeeded)
+                            .color(NamedTextColor.YELLOW)
+                            .decoration(TextDecoration.BOLD, true))
+                    .append(Component.text(" kills")
+                            .color(NamedTextColor.GRAY)));
         }
 
         handleVictimSpearDowngrade(victim);
-    }
-
-    private int getKillsToUpgrade(FileConfiguration config, Spear.Tier tier) {
-        return switch (tier) {
-            case WOOD -> config.getInt("spear.wood.kills-to-upgrade", 1);
-            case COPPER -> config.getInt("spear.copper.kills-to-upgrade", 2);
-            case IRON -> config.getInt("spear.iron.kills-to-upgrade", 3);
-            case DIAMOND -> config.getInt("spear.diamond.kills-to-upgrade", 4);
-            case NETHERITE -> 999;
-        };
     }
 
     private void handleVictimSpearDowngrade(Player victim) {
@@ -138,6 +150,10 @@ public class SpearListener implements Listener {
         return null;
     }
 
+    private boolean hasSpear(Player player) {
+        return findSpearInInventory(player) != null;
+    }
+
     @EventHandler(priority = EventPriority.HIGH)
     public void onPrepareAnvil(PrepareAnvilEvent event) {
         AnvilInventory inventory = event.getInventory();
@@ -167,6 +183,34 @@ public class SpearListener implements Listener {
             result.setItemMeta(meta);
         }
 
+        event.setResult(result);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onPrepareSmithing(PrepareSmithingEvent event) {
+        SmithingInventory inventory = event.getInventory();
+        ItemStack inputItem = inventory.getInputEquipment();
+        ItemStack materialItem = inventory.getInputMineral();
+
+        if (inputItem == null || materialItem == null) {
+            return;
+        }
+
+        if (!Spear.isSpear(inputItem)) {
+            return;
+        }
+
+        Spear.Tier currentTier = Spear.getTier(inputItem);
+
+        if (currentTier != Spear.Tier.DIAMOND) {
+            return;
+        }
+
+        if (materialItem.getType() != Material.NETHERITE_INGOT) {
+            return;
+        }
+
+        ItemStack result = Spear.create(Spear.Tier.NETHERITE);
         event.setResult(result);
     }
 }
