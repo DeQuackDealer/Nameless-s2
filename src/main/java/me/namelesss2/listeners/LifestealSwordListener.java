@@ -45,55 +45,87 @@ public class LifestealSwordListener implements Listener {
         double healthPerKill = heartsPerKill * 2.0;
         double maxBonusHealth = maxBonusHearts * 2.0;
 
-        AttributeInstance maxHealthAttr = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        if (maxHealthAttr == null) {
+        AttributeInstance killerMaxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance victimMaxHealth = victim.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        
+        if (killerMaxHealth == null || victimMaxHealth == null) {
             return;
         }
 
-        NamespacedKey modifierKey = getPlayerModifierKey(killer);
-        double currentBonus = 0.0;
-        AttributeModifier existingModifier = null;
+        NamespacedKey killerModKey = getPlayerModifierKey(killer);
+        double killerCurrentBonus = 0.0;
+        AttributeModifier killerExistingMod = null;
         
-        for (AttributeModifier modifier : maxHealthAttr.getModifiers()) {
-            if (modifier.getKey().equals(modifierKey)) {
-                currentBonus = modifier.getAmount();
-                existingModifier = modifier;
+        for (AttributeModifier modifier : killerMaxHealth.getModifiers()) {
+            if (modifier.getKey().equals(killerModKey)) {
+                killerCurrentBonus = modifier.getAmount();
+                killerExistingMod = modifier;
                 break;
             }
         }
 
-        if (currentBonus >= maxBonusHealth) {
+        if (killerCurrentBonus >= maxBonusHealth) {
             killer.sendMessage(Component.text("You have reached the maximum bonus hearts!")
                     .color(NamedTextColor.YELLOW));
             return;
         }
 
-        double newBonus = Math.min(currentBonus + healthPerKill, maxBonusHealth);
-
-        if (existingModifier != null) {
-            maxHealthAttr.removeModifier(existingModifier);
+        NamespacedKey victimModKey = getPlayerModifierKey(victim);
+        double victimCurrentBonus = 0.0;
+        AttributeModifier victimExistingMod = null;
+        
+        for (AttributeModifier modifier : victimMaxHealth.getModifiers()) {
+            if (modifier.getKey().equals(victimModKey)) {
+                victimCurrentBonus = modifier.getAmount();
+                victimExistingMod = modifier;
+                break;
+            }
         }
 
-        AttributeModifier newModifier = new AttributeModifier(
-                modifierKey,
-                newBonus,
+        double killerNewBonus = Math.min(killerCurrentBonus + healthPerKill, maxBonusHealth);
+
+        if (killerExistingMod != null) {
+            killerMaxHealth.removeModifier(killerExistingMod);
+        }
+
+        AttributeModifier killerNewMod = new AttributeModifier(
+                killerModKey,
+                killerNewBonus,
                 AttributeModifier.Operation.ADD_NUMBER
         );
-        maxHealthAttr.addModifier(newModifier);
+        killerMaxHealth.addModifier(killerNewMod);
+
+        double victimNewBonus = victimCurrentBonus - healthPerKill;
+        
+        if (victimExistingMod != null) {
+            victimMaxHealth.removeModifier(victimExistingMod);
+        }
+
+        if (victimNewBonus != 0) {
+            AttributeModifier victimNewMod = new AttributeModifier(
+                    victimModKey,
+                    victimNewBonus,
+                    AttributeModifier.Operation.ADD_NUMBER
+            );
+            victimMaxHealth.addModifier(victimNewMod);
+        }
 
         double heartsGained = heartsPerKill;
-        double totalBonusHearts = newBonus / 2.0;
+        double totalBonusHearts = killerNewBonus / 2.0;
 
-        killer.sendMessage(Component.text("+" + String.format("%.1f", heartsGained) + " permanent heart! ")
+        killer.sendMessage(Component.text("+" + String.format("%.1f", heartsGained) + " heart stolen! ")
                 .color(NamedTextColor.RED)
                 .append(Component.text("(Total bonus: " + String.format("%.1f", totalBonusHearts) + " hearts)")
                         .color(NamedTextColor.GRAY)));
+
+        victim.sendMessage(Component.text("-" + String.format("%.1f", heartsGained) + " heart lost!")
+                .color(NamedTextColor.DARK_RED));
 
         killer.playSound(killer.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
         killer.getWorld().spawnParticle(Particle.HEART, 
                 killer.getLocation().add(0, 2, 0), 10, 0.5, 0.3, 0.5, 0.1);
 
-        double newMaxHealth = maxHealthAttr.getValue();
+        double newMaxHealth = killerMaxHealth.getValue();
         if (killer.getHealth() < newMaxHealth) {
             killer.setHealth(Math.min(killer.getHealth() + healthPerKill, newMaxHealth));
         }
