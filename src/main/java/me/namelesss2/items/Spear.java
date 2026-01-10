@@ -14,8 +14,6 @@ import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public final class Spear {
@@ -27,7 +25,7 @@ public final class Spear {
         WOOD(0, "Wooden Spear", NamedTextColor.GOLD, 250, Material.OAK_PLANKS, 1),
         COPPER(1, "Copper Spear", NamedTextColor.GOLD, 250, Material.COPPER_INGOT, 2),
         IRON(2, "Iron Spear", NamedTextColor.WHITE, 250, Material.IRON_INGOT, 3),
-        DIAMOND(3, "Diamond Spear", NamedTextColor.AQUA, 1561, Material.DIAMOND, 4),
+        DIAMOND(3, "Diamond Spear", NamedTextColor.AQUA, 1561, Material.DIAMOND, -1),
         NETHERITE(4, "Netherite Spear", NamedTextColor.DARK_RED, 2031, Material.NETHERITE_INGOT, -1);
 
         private final int ordinalValue;
@@ -58,8 +56,7 @@ public final class Spear {
                 case WOOD -> COPPER;
                 case COPPER -> IRON;
                 case IRON -> DIAMOND;
-                case DIAMOND -> NETHERITE;
-                case NETHERITE -> null;
+                case DIAMOND, NETHERITE -> null;
             };
         }
 
@@ -114,36 +111,9 @@ public final class Spear {
 
         meta.displayName(Component.text(tier.getDisplayName())
                 .color(tier.getColor())
-                .decoration(TextDecoration.ITALIC, false)
-                .decoration(TextDecoration.BOLD, true));
-
-        List<Component> lore = new ArrayList<>();
-        lore.add(Component.text("Tier: " + tier.name())
-                .color(NamedTextColor.GRAY)
                 .decoration(TextDecoration.ITALIC, false));
 
-        if (tier.getNextTier() != null) {
-            lore.add(Component.text("Kills: " + kills + "/" + tier.getKillsToUpgrade())
-                    .color(NamedTextColor.DARK_GRAY)
-                    .decoration(TextDecoration.ITALIC, false));
-            lore.add(Component.text("Next: " + tier.getNextTier().getDisplayName())
-                    .color(NamedTextColor.GREEN)
-                    .decoration(TextDecoration.ITALIC, false));
-        } else {
-            lore.add(Component.text("MAX TIER")
-                    .color(NamedTextColor.GOLD)
-                    .decoration(TextDecoration.ITALIC, false)
-                    .decoration(TextDecoration.BOLD, true));
-        }
-
-        lore.add(Component.text("Repair with: " + formatMaterialName(tier.getRepairMaterial()))
-                .color(NamedTextColor.DARK_GRAY)
-                .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("Melee only - cannot be thrown")
-                .color(NamedTextColor.DARK_GRAY)
-                .decoration(TextDecoration.ITALIC, true));
-
-        meta.lore(lore);
+        meta.lore(null);
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
         meta.getPersistentDataContainer().set(NamelessS2.SPEAR_TIER_KEY, PersistentDataType.INTEGER, tier.getOrdinalValue());
@@ -159,22 +129,6 @@ public final class Spear {
         for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
             item.addUnsafeEnchantment(entry.getKey(), entry.getValue());
         }
-    }
-
-    private static String formatMaterialName(Material material) {
-        String name = material.name().replace("_", " ");
-        StringBuilder result = new StringBuilder();
-        boolean capitalizeNext = true;
-        for (char c : name.toLowerCase().toCharArray()) {
-            if (capitalizeNext) {
-                result.append(Character.toUpperCase(c));
-                capitalizeNext = false;
-            } else {
-                result.append(c);
-            }
-            if (c == ' ') capitalizeNext = true;
-        }
-        return result.toString();
     }
 
     public static boolean isSpear(ItemStack item) {
