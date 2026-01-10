@@ -11,7 +11,6 @@ import me.namelesss2.listeners.LifestealSwordListener;
 import me.namelesss2.listeners.PlayerJoinListener;
 import me.namelesss2.listeners.SpearListener;
 import me.namelesss2.listeners.SwapRodListener;
-import me.namelesss2.managers.DiamondHeartsManager;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -41,7 +40,6 @@ public final class NamelessS2 extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        DiamondHeartsManager.getInstance().clearAll();
         getLogger().info("Nameless-s2 has been disabled!");
     }
 
@@ -74,4 +72,3 @@ public final class NamelessS2 extends JavaPlugin {
         return instance;
     }
 }
-
