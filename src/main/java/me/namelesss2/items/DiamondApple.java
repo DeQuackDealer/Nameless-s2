@@ -25,37 +25,27 @@ public final class DiamondApple {
 
         Component displayName = Component.text("Diamond Apple")
                 .color(NamedTextColor.AQUA)
-                .decoration(TextDecoration.ITALIC, false)
-                .decoration(TextDecoration.BOLD, true);
+                .decoration(TextDecoration.ITALIC, false);
         meta.displayName(displayName);
 
         List<Component> lore = new ArrayList<>();
-        lore.add(Component.empty());
-        lore.add(Component.text("Diamond Hearts")
-                .color(NamedTextColor.AQUA)
-                .decoration(TextDecoration.ITALIC, false)
-                .decoration(TextDecoration.BOLD, true));
-        lore.add(Component.text("Grants 3 Diamond Hearts that repair")
-                .color(NamedTextColor.GRAY)
+        lore.add(Component.text("Absorption IV (8:00)")
+                .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text("100 durability per armor piece when hit")
-                .color(NamedTextColor.GRAY)
+        lore.add(Component.text("Regeneration III (1:00)")
+                .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.empty());
-        lore.add(Component.text("Also Grants:")
-                .color(NamedTextColor.WHITE)
+        lore.add(Component.text("Resistance II (1:30)")
+                .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text(" + Regeneration III (10s)")
-                .color(NamedTextColor.LIGHT_PURPLE)
+        lore.add(Component.text("Strength III (1:30)")
+                .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text(" + Resistance II (60s)")
-                .color(NamedTextColor.BLUE)
+        lore.add(Component.text("Speed II (8:00)")
+                .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text(" + Strength II (60s)")
-                .color(NamedTextColor.RED)
-                .decoration(TextDecoration.ITALIC, false));
-        lore.add(Component.text(" + Fire Resistance (60s)")
-                .color(NamedTextColor.GOLD)
+        lore.add(Component.text("Fire Resistance (8:00)")
+                .color(NamedTextColor.DARK_GRAY)
                 .decoration(TextDecoration.ITALIC, false));
         meta.lore(lore);
 
