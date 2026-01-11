@@ -17,6 +17,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -221,6 +222,25 @@ public class SwapRodListener implements Listener {
                 player.sendMessage(Component.text("You can only hold one Swap Rod!")
                         .color(NamedTextColor.RED));
             }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onCraftSwapRod(CraftItemEvent event) {
+        ItemStack result = event.getRecipe().getResult();
+
+        if (!SwapRod.isSwapRod(result)) {
+            return;
+        }
+
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
+
+        if (countSwapRodsInInventory(player) >= 1) {
+            event.setCancelled(true);
+            player.sendMessage(Component.text("You can only hold one Swap Rod!")
+                    .color(NamedTextColor.RED));
         }
     }
 
