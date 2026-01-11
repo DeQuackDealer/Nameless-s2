@@ -1,12 +1,16 @@
 package me.namelesss2;
 
 import me.namelesss2.commands.CreditCommand;
+import me.namelesss2.commands.EnchantBlockCommand;
 import me.namelesss2.commands.GiveCommand;
+import me.namelesss2.commands.WithdrawCommand;
 import me.namelesss2.items.DiamondApple;
 import me.namelesss2.items.LifestealSword;
 import me.namelesss2.items.Spear;
 import me.namelesss2.items.SwapRod;
 import me.namelesss2.listeners.DiamondAppleListener;
+import me.namelesss2.listeners.EnchantBlockListener;
+import me.namelesss2.listeners.LifeStarListener;
 import me.namelesss2.listeners.LifestealSwordListener;
 import me.namelesss2.listeners.PlayerJoinListener;
 import me.namelesss2.listeners.SpearListener;
@@ -56,6 +60,8 @@ public final class NamelessS2 extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DiamondAppleListener(), this);
         getServer().getPluginManager().registerEvents(new SpearListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(), this);
+        getServer().getPluginManager().registerEvents(new LifeStarListener(), this);
+        getServer().getPluginManager().registerEvents(new EnchantBlockListener(), this);
     }
 
     private void registerCommands() {
@@ -66,6 +72,14 @@ public final class NamelessS2 extends JavaPlugin {
         GiveCommand giveCommand = new GiveCommand();
         getCommand("ns").setExecutor(giveCommand);
         getCommand("ns").setTabCompleter(giveCommand);
+
+        WithdrawCommand withdrawCommand = new WithdrawCommand();
+        getCommand("withdraw").setExecutor(withdrawCommand);
+        getCommand("withdraw").setTabCompleter(withdrawCommand);
+
+        EnchantBlockCommand enchantBlockCommand = new EnchantBlockCommand();
+        getCommand("enchantblock").setExecutor(enchantBlockCommand);
+        getCommand("enchantblock").setTabCompleter(enchantBlockCommand);
     }
 
     public static NamelessS2 getInstance() {
