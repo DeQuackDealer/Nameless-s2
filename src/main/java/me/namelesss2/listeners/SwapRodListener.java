@@ -1,5 +1,6 @@
 package me.namelesss2.listeners;
 
+import me.namelesss2.NamelessS2;
 import me.namelesss2.items.SwapRod;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -7,6 +8,7 @@ import org.bukkit.FluidCollisionMode;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -14,12 +16,12 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.RayTraceResult;
 
 import java.util.HashMap;
@@ -29,8 +31,16 @@ import java.util.UUID;
 public class SwapRodListener implements Listener {
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
-    private static final double MAX_DISTANCE = 16.0;
-    private static final long COOLDOWN_MS = 1000L;
+
+    private int countSwapRods(Player player) {
+        int count = 0;
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && SwapRod.isSwapRod(item)) {
+                count += item.getAmount();
+            }
+        }
+        return count;
+    }
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
@@ -51,17 +61,21 @@ public class SwapRodListener implements Listener {
 
         event.setCancelled(true);
 
+        FileConfiguration config = NamelessS2.getInstance().getConfig();
+        double maxDistance = config.getDouble("swap-rod.radius", 16.0);
+        long cooldownMs = config.getLong("swap-rod.cooldown-ms", 1000L);
+
         long currentTime = System.currentTimeMillis();
         Long lastUse = cooldowns.get(player.getUniqueId());
 
-        if (lastUse != null && currentTime - lastUse < COOLDOWN_MS) {
+        if (lastUse != null && currentTime - lastUse < cooldownMs) {
             return;
         }
 
         RayTraceResult entityResult = player.getWorld().rayTraceEntities(
                 player.getEyeLocation(),
                 player.getEyeLocation().getDirection(),
-                MAX_DISTANCE,
+                maxDistance,
                 0.5,
                 entity -> entity instanceof LivingEntity && !entity.equals(player)
         );
@@ -107,18 +121,42 @@ public class SwapRodListener implements Listener {
         target.getWorld().playSound(target.getLocation(), Sound.ENTITY_ENDERMAN_TELEPORT, 0.3f, 1.0f);
 
         cooldowns.put(player.getUniqueId(), currentTime);
+    }
 
-        ItemMeta meta = item.getItemMeta();
-        if (meta instanceof Damageable damageable) {
-            int currentDamage = damageable.getDamage();
-            int maxDamage = SwapRod.MAX_DURABILITY;
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
 
-            if (currentDamage + 1 >= maxDamage) {
-                player.getInventory().setItemInMainHand(null);
-                player.getWorld().playSound(player.getLocation(), Sound.ENTITY_ITEM_BREAK, 0.5f, 1.0f);
-            } else {
-                damageable.setDamage(currentDamage + 1);
-                item.setItemMeta(meta);
+        ItemStack cursor = event.getCursor();
+        ItemStack current = event.getCurrentItem();
+
+        if (cursor != null && SwapRod.isSwapRod(cursor)) {
+            int currentCount = countSwapRods(player);
+            if (cursor == player.getItemOnCursor() && currentCount > 0) {
+                return;
+            }
+            if (currentCount >= 1 && !SwapRod.isSwapRod(current)) {
+                event.setCancelled(true);
+                player.sendMessage(Component.text("You can only hold one Swap Rod!")
+                        .color(NamedTextColor.RED));
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPickupItem(EntityPickupItemEvent event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+
+        ItemStack item = event.getItem().getItemStack();
+        if (SwapRod.isSwapRod(item)) {
+            if (countSwapRods(player) >= 1) {
+                event.setCancelled(true);
+                player.sendMessage(Component.text("You can only hold one Swap Rod!")
+                        .color(NamedTextColor.RED));
             }
         }
     }
