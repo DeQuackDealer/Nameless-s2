@@ -18,9 +18,11 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.EquipmentSlot;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.RayTraceResult;
 
@@ -32,9 +34,19 @@ public class SwapRodListener implements Listener {
 
     private final Map<UUID, Long> cooldowns = new HashMap<>();
 
-    private int countSwapRods(Player player) {
+    private int countSwapRodsInInventory(Player player) {
         int count = 0;
         for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && SwapRod.isSwapRod(item)) {
+                count += item.getAmount();
+            }
+        }
+        return count;
+    }
+
+    private int countSwapRodsInItems(ItemStack... items) {
+        int count = 0;
+        for (ItemStack item : items) {
             if (item != null && SwapRod.isSwapRod(item)) {
                 count += item.getAmount();
             }
@@ -123,7 +135,7 @@ public class SwapRodListener implements Listener {
         cooldowns.put(player.getUniqueId(), currentTime);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGH)
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player player)) {
             return;
@@ -131,13 +143,64 @@ public class SwapRodListener implements Listener {
 
         ItemStack cursor = event.getCursor();
         ItemStack current = event.getCurrentItem();
+        
+        boolean cursorIsSwapRod = cursor != null && SwapRod.isSwapRod(cursor);
+        boolean currentIsSwapRod = current != null && SwapRod.isSwapRod(current);
+        
+        int currentCount = countSwapRodsInInventory(player);
 
-        if (cursor != null && SwapRod.isSwapRod(cursor)) {
-            int currentCount = countSwapRods(player);
-            if (cursor == player.getItemOnCursor() && currentCount > 0) {
+        Inventory clickedInventory = event.getClickedInventory();
+        boolean clickedPlayerInventory = clickedInventory != null && clickedInventory.equals(player.getInventory());
+
+        if (event.isShiftClick() && currentIsSwapRod && !clickedPlayerInventory) {
+            if (currentCount >= 1) {
+                event.setCancelled(true);
+                player.sendMessage(Component.text("You can only hold one Swap Rod!")
+                        .color(NamedTextColor.RED));
                 return;
             }
-            if (currentCount >= 1 && !SwapRod.isSwapRod(current)) {
+        }
+
+        if (cursorIsSwapRod && clickedPlayerInventory) {
+            if (currentCount >= 1 && !currentIsSwapRod) {
+                event.setCancelled(true);
+                player.sendMessage(Component.text("You can only hold one Swap Rod!")
+                        .color(NamedTextColor.RED));
+                return;
+            }
+        }
+
+        if (event.getClick().isKeyboardClick() && currentIsSwapRod && !clickedPlayerInventory) {
+            if (currentCount >= 1) {
+                event.setCancelled(true);
+                player.sendMessage(Component.text("You can only hold one Swap Rod!")
+                        .color(NamedTextColor.RED));
+            }
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onInventoryDrag(InventoryDragEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) {
+            return;
+        }
+
+        ItemStack draggedItem = event.getOldCursor();
+        if (draggedItem == null || !SwapRod.isSwapRod(draggedItem)) {
+            return;
+        }
+
+        boolean draggedToPlayerInventory = false;
+        for (int slot : event.getRawSlots()) {
+            if (slot >= event.getView().getTopInventory().getSize()) {
+                draggedToPlayerInventory = true;
+                break;
+            }
+        }
+
+        if (draggedToPlayerInventory) {
+            int currentCount = countSwapRodsInInventory(player);
+            if (currentCount >= 1) {
                 event.setCancelled(true);
                 player.sendMessage(Component.text("You can only hold one Swap Rod!")
                         .color(NamedTextColor.RED));
@@ -153,7 +216,7 @@ public class SwapRodListener implements Listener {
 
         ItemStack item = event.getItem().getItemStack();
         if (SwapRod.isSwapRod(item)) {
-            if (countSwapRods(player) >= 1) {
+            if (countSwapRodsInInventory(player) >= 1) {
                 event.setCancelled(true);
                 player.sendMessage(Component.text("You can only hold one Swap Rod!")
                         .color(NamedTextColor.RED));
