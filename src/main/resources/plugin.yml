@@ -3,7 +3,7 @@ version: '${project.version}'
 main: me.namelesss2.NamelessS2
 api-version: '1.21'
 author: DeQuackDealer
-description: A custom Paper plugin featuring Lifesteal Sword, Swap Rod, Diamond Apple, and Spear progression system
+description: Season 2 Custom Items - Lifesteal Sword, Swap Rod, Diamond Apple, and Spear
 website: https://github.com/DeQuackDealer
 
 commands:
@@ -14,6 +14,13 @@ commands:
     description: Give custom items
     usage: /ns <player> <item>
     permission: namelesss2.give
+  withdraw:
+    description: Withdraw a bonus heart into a Life Star
+    usage: /withdraw
+  enchantblock:
+    description: Toggle enchanting table block on held item
+    usage: /enchantblock
+    permission: namelesss2.enchantblock
 
 permissions:
   namelesss2.give:
@@ -21,4 +28,7 @@ permissions:
     default: op
   namelesss2.reload:
     description: Allows reloading config
+    default: op
+  namelesss2.enchantblock:
+    description: Allows blocking items from enchanting table
     default: op
