@@ -62,10 +62,38 @@ public class GiveCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
+        if (itemName.equals("swap_rod") && hasSwapRod(target)) {
+            sender.sendMessage(Component.text("Warning: " + target.getName() + " already has a Swap Rod!")
+                    .color(NamedTextColor.YELLOW));
+        }
+
+        if (itemName.startsWith("spear_") && hasSpear(target)) {
+            sender.sendMessage(Component.text("Warning: " + target.getName() + " already has a Spear!")
+                    .color(NamedTextColor.YELLOW));
+        }
+
         target.getInventory().addItem(item);
         sender.sendMessage(Component.text("Gave " + itemName + " to " + target.getName()).color(NamedTextColor.GREEN));
 
         return true;
+    }
+
+    private boolean hasSwapRod(Player player) {
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && SwapRod.isSwapRod(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean hasSpear(Player player) {
+        for (ItemStack item : player.getInventory().getContents()) {
+            if (item != null && Spear.isSpear(item)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private ItemStack getItem(String name) {
