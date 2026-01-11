@@ -17,12 +17,20 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
+import java.util.UUID;
 
 public class LifestealSwordListener implements Listener {
 
     private NamespacedKey getPlayerModifierKey(Player player) {
         String playerKeyPart = player.getUniqueId().toString().replace("-", "_");
         return new NamespacedKey("nameless_s2", "lifesteal_health_" + playerKeyPart);
+    }
+
+    private NamespacedKey getStolenFromKey(Player victim) {
+        return new NamespacedKey("nameless_s2", "stolen_from_" + victim.getUniqueId().toString().replace("-", "_"));
     }
 
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -42,20 +50,34 @@ public class LifestealSwordListener implements Listener {
         FileConfiguration config = NamelessS2.getInstance().getConfig();
         double heartsPerKill = config.getDouble("lifesteal-sword.hearts-per-kill", 1.0);
         double maxBonusHearts = config.getDouble("lifesteal-sword.max-bonus-hearts", 10.0);
+        double maxStealFromPlayer = config.getDouble("lifesteal-sword.max-steal-from-player", 3.0);
         double healthPerKill = heartsPerKill * 2.0;
         double maxBonusHealth = maxBonusHearts * 2.0;
+        double maxStealHealth = maxStealFromPlayer * 2.0;
 
         AttributeInstance killerMaxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         AttributeInstance victimMaxHealth = victim.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        
+
         if (killerMaxHealth == null || victimMaxHealth == null) {
+            return;
+        }
+
+        double alreadyStolenFromVictim = getStoredStolenAmount(killer, victim);
+        if (alreadyStolenFromVictim >= maxStealHealth) {
+            killer.sendMessage(Component.text("You've already stolen the maximum hearts from this player!")
+                    .color(NamedTextColor.YELLOW));
+            return;
+        }
+
+        double canStealThisTime = Math.min(healthPerKill, maxStealHealth - alreadyStolenFromVictim);
+        if (canStealThisTime <= 0) {
             return;
         }
 
         NamespacedKey killerModKey = getPlayerModifierKey(killer);
         double killerCurrentBonus = 0.0;
         AttributeModifier killerExistingMod = null;
-        
+
         for (AttributeModifier modifier : killerMaxHealth.getModifiers()) {
             if (modifier.getKey().equals(killerModKey)) {
                 killerCurrentBonus = modifier.getAmount();
@@ -73,7 +95,7 @@ public class LifestealSwordListener implements Listener {
         NamespacedKey victimModKey = getPlayerModifierKey(victim);
         double victimCurrentBonus = 0.0;
         AttributeModifier victimExistingMod = null;
-        
+
         for (AttributeModifier modifier : victimMaxHealth.getModifiers()) {
             if (modifier.getKey().equals(victimModKey)) {
                 victimCurrentBonus = modifier.getAmount();
@@ -82,7 +104,8 @@ public class LifestealSwordListener implements Listener {
             }
         }
 
-        double killerNewBonus = Math.min(killerCurrentBonus + healthPerKill, maxBonusHealth);
+        double actualSteal = Math.min(canStealThisTime, maxBonusHealth - killerCurrentBonus);
+        double killerNewBonus = killerCurrentBonus + actualSteal;
 
         if (killerExistingMod != null) {
             killerMaxHealth.removeModifier(killerExistingMod);
@@ -95,8 +118,8 @@ public class LifestealSwordListener implements Listener {
         );
         killerMaxHealth.addModifier(killerNewMod);
 
-        double victimNewBonus = victimCurrentBonus - healthPerKill;
-        
+        double victimNewBonus = victimCurrentBonus - actualSteal;
+
         if (victimExistingMod != null) {
             victimMaxHealth.removeModifier(victimExistingMod);
         }
@@ -110,7 +133,9 @@ public class LifestealSwordListener implements Listener {
             victimMaxHealth.addModifier(victimNewMod);
         }
 
-        double heartsGained = heartsPerKill;
+        setStoredStolenAmount(killer, victim, alreadyStolenFromVictim + actualSteal);
+
+        double heartsGained = actualSteal / 2.0;
         double totalBonusHearts = killerNewBonus / 2.0;
 
         killer.sendMessage(Component.text("+" + String.format("%.1f", heartsGained) + " heart stolen! ")
@@ -122,12 +147,25 @@ public class LifestealSwordListener implements Listener {
                 .color(NamedTextColor.DARK_RED));
 
         killer.playSound(killer.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1.0f, 1.5f);
-        killer.getWorld().spawnParticle(Particle.HEART, 
+        killer.getWorld().spawnParticle(Particle.HEART,
                 killer.getLocation().add(0, 2, 0), 10, 0.5, 0.3, 0.5, 0.1);
 
         double newMaxHealth = killerMaxHealth.getValue();
         if (killer.getHealth() < newMaxHealth) {
-            killer.setHealth(Math.min(killer.getHealth() + healthPerKill, newMaxHealth));
+            killer.setHealth(Math.min(killer.getHealth() + actualSteal, newMaxHealth));
         }
+    }
+
+    private double getStoredStolenAmount(Player killer, Player victim) {
+        PersistentDataContainer pdc = killer.getPersistentDataContainer();
+        NamespacedKey key = getStolenFromKey(victim);
+        Double value = pdc.get(key, PersistentDataType.DOUBLE);
+        return value != null ? value : 0.0;
+    }
+
+    private void setStoredStolenAmount(Player killer, Player victim, double amount) {
+        PersistentDataContainer pdc = killer.getPersistentDataContainer();
+        NamespacedKey key = getStolenFromKey(victim);
+        pdc.set(key, PersistentDataType.DOUBLE, amount);
     }
 }
