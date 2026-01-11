@@ -1,50 +1,48 @@
 # Nameless-s2 Config
-# s2 items for the SMP
+# Season 2 custom items
+
+# Diamond Apple
+diamond-apple:
+  absorption-hearts: 8
+  effects:
+    regeneration:
+      enabled: true
+      duration-seconds: 60
+      amplifier: 2
+    resistance:
+      enabled: true
+      duration-seconds: 90
+      amplifier: 1
+    strength:
+      enabled: true
+      duration-seconds: 90
+      amplifier: 2
+    speed:
+      enabled: true
+      duration-seconds: 480
+      amplifier: 1
+    fire-resistance:
+      enabled: true
+      duration-seconds: 480
+      amplifier: 0
 
 # Lifesteal Sword
 lifesteal-sword:
   hearts-per-kill: 1.0
   max-bonus-hearts: 10.0
-  attack-damage: 9.0
-  attack-knockback: 3.0
+  max-steal-from-player: 3.0
 
 # Swap Rod
 swap-rod:
-  cooldown-seconds: 5
-  durability: 2031
-  max-distance: 256.0
-  sound-volume: 0.3
+  radius: 16.0
+  cooldown-ms: 1000
 
-# Diamond Apple
-diamond-apple:
-  diamond-hearts:
-    amount: 3
-    durability-repair-per-piece: 100
-  regeneration-duration-seconds: 10
-  resistance-duration-seconds: 60
-  fire-resistance-duration-seconds: 60
-  strength-duration-seconds: 30
-
-# Spear tiers
+# Spear
 spear:
-  wood:
-    durability: 250
-    kills-to-upgrade: 1
-  copper:
-    durability: 250
-    kills-to-upgrade: 2
-  iron:
-    durability: 250
-    kills-to-upgrade: 3
-  diamond:
-    durability: 1561
-    kills-to-upgrade: 4
-  netherite:
-    durability: 2031
+  kills-to-upgrade: 50
 
-# Customizable messages
+# Messages
 messages:
   lifesteal-kill: "You gained a permanent heart from slaying %victim%!"
   swap-success: "Swapped positions!"
   spear-upgrade: "Your spear has been upgraded to %tier%!"
-  spear-downgrade: "Your spear has been downgraded to %tier%!"
