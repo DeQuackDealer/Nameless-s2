@@ -8,6 +8,7 @@ import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Material;
 import org.bukkit.Particle;
 import org.bukkit.Sound;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
 import org.bukkit.event.EventHandler;
@@ -83,8 +84,9 @@ public class SpearListener implements Listener {
             return;
         }
 
+        FileConfiguration config = NamelessS2.getInstance().getConfig();
+        int killsNeeded = config.getInt("spear.kills-to-upgrade", 50);
         int currentKills = Spear.getKills(spear) + 1;
-        int killsNeeded = currentTier.getKillsToUpgrade();
 
         if (currentKills >= killsNeeded) {
             Spear.Tier newTier = currentTier.getNextTier();
