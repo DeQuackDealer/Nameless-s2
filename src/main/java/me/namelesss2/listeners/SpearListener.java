@@ -80,7 +80,7 @@ public class SpearListener implements Listener {
 
         Spear.Tier currentTier = Spear.getTier(spear);
         
-        if (currentTier.getNextTier() == null) {
+        if (currentTier.getNextTier() == null || currentTier.getKillsToUpgrade() < 0) {
             return;
         }
 
