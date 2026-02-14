@@ -15,20 +15,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: Build with Maven
-        run: mvn clean package --no-transfer-progress
-
-      - name: Upload artifact
+      - name: Upload SwapRod
         uses: actions/upload-artifact@v4
         with:
-          name: Nameless-s2
-          path: target/Nameless-s2-*.jar
+          name: SwapRod
+          path: src/main/java/me/namelesss2/items/SwapRod.java
           retention-days: 30
           if-no-files-found: error
