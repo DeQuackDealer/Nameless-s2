@@ -37,7 +37,7 @@ public class WithdrawCommand implements CommandExecutor, TabCompleter {
             return true;
         }
 
-        AttributeInstance maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance maxHealth = player.getAttribute(Attribute.MAX_HEALTH);
         if (maxHealth == null) {
             player.sendMessage(Component.text("Could not access health attribute!").color(NamedTextColor.RED));
             return true;
