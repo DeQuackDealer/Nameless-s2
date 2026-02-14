@@ -75,8 +75,8 @@ public class SwapRodListener implements Listener {
         event.setCancelled(true);
 
         FileConfiguration config = NamelessS2.getInstance().getConfig();
-        double maxDistance = config.getDouble("swap-rod.radius", 16.0);
-        long cooldownMs = config.getLong("swap-rod.cooldown-ms", 1000L);
+        double maxDistance = config.getDouble("swap-rod.radius", 20.0);
+        long cooldownMs = config.getLong("swap-rod.cooldown-ms", 0L);
 
         long currentTime = System.currentTimeMillis();
         Long lastUse = cooldowns.get(player.getUniqueId());
