@@ -38,7 +38,7 @@ public final class LifestealSword {
                 AttributeModifier.Operation.ADD_NUMBER,
                 EquipmentSlotGroup.MAINHAND
         );
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_DAMAGE, damageModifier);
+        meta.addAttributeModifier(Attribute.ATTACK_DAMAGE, damageModifier);
 
         AttributeModifier speedModifier = new AttributeModifier(
                 new NamespacedKey("nameless_s2", "lifesteal_speed"),
@@ -46,7 +46,7 @@ public final class LifestealSword {
                 AttributeModifier.Operation.ADD_NUMBER,
                 EquipmentSlotGroup.MAINHAND
         );
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_SPEED, speedModifier);
+        meta.addAttributeModifier(Attribute.ATTACK_SPEED, speedModifier);
 
         AttributeModifier knockbackModifier = new AttributeModifier(
                 new NamespacedKey("nameless_s2", "lifesteal_knockback"),
@@ -54,7 +54,7 @@ public final class LifestealSword {
                 AttributeModifier.Operation.ADD_NUMBER,
                 EquipmentSlotGroup.MAINHAND
         );
-        meta.addAttributeModifier(Attribute.GENERIC_ATTACK_KNOCKBACK, knockbackModifier);
+        meta.addAttributeModifier(Attribute.ATTACK_KNOCKBACK, knockbackModifier);
 
         ItemUtils.setCustomItem(meta, ITEM_ID);
 
