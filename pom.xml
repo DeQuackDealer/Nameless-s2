@@ -31,14 +31,14 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21.4-R0.1-SNAPSHOT</version>
+            <version>1.21.11-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
 
     <build>
         <defaultGoal>clean package</defaultGoal>
-        <finalName>${project.name}-${project.version}</finalName>
+        <finalName>Nameless_Pack</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
