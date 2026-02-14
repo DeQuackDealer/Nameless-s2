@@ -45,16 +45,6 @@ public class SwapRodListener implements Listener {
         return count;
     }
 
-    private int countSwapRodsInItems(ItemStack... items) {
-        int count = 0;
-        for (ItemStack item : items) {
-            if (item != null && SwapRod.isSwapRod(item)) {
-                count += item.getAmount();
-            }
-        }
-        return count;
-    }
-
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerInteract(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
