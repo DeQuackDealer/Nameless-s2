@@ -2,6 +2,7 @@ package me.namelesss2.listeners;
 
 import me.namelesss2.NamelessS2;
 import me.namelesss2.items.DiamondApple;
+import org.bukkit.NamespacedKey;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -10,6 +11,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,6 +20,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.UUID;
 
 public class DiamondAppleListener implements Listener {
+
+    private static final NamespacedKey CUSTOM_ABSORPTION_KEY = new NamespacedKey("nameless_s2", "custom_absorption");
 
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerConsume(PlayerItemConsumeEvent event) {
@@ -40,13 +45,22 @@ public class DiamondAppleListener implements Listener {
                 }
 
                 FileConfiguration config = NamelessS2.getInstance().getConfig();
+                double absorptionHearts = config.getDouble("diamond-apple.absorption-hearts", 8.0);
+                double newAbsorptionHP = absorptionHearts * 2.0;
 
                 p.removePotionEffect(PotionEffectType.REGENERATION);
                 p.removePotionEffect(PotionEffectType.ABSORPTION);
 
-                double absorptionHearts = config.getDouble("diamond-apple.absorption-hearts", 8.0);
-                double currentAbsorption = p.getAbsorptionAmount();
-                p.setAbsorptionAmount(currentAbsorption + (absorptionHearts * 2.0));
+                PersistentDataContainer pdc = p.getPersistentDataContainer();
+                double existingCustom = 0.0;
+                Double stored = pdc.get(CUSTOM_ABSORPTION_KEY, PersistentDataType.DOUBLE);
+                if (stored != null) {
+                    existingCustom = Math.min(stored, p.getAbsorptionAmount());
+                }
+
+                double totalCustom = existingCustom + newAbsorptionHP;
+                p.setAbsorptionAmount(totalCustom);
+                pdc.set(CUSTOM_ABSORPTION_KEY, PersistentDataType.DOUBLE, totalCustom);
 
                 if (config.getBoolean("diamond-apple.effects.regeneration.enabled", true)) {
                     int duration = config.getInt("diamond-apple.effects.regeneration.duration-seconds", 60) * 20;
