@@ -55,8 +55,8 @@ public class LifestealSwordListener implements Listener {
         double maxBonusHealth = maxBonusHearts * 2.0;
         double maxStealHealth = maxStealFromPlayer * 2.0;
 
-        AttributeInstance killerMaxHealth = killer.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        AttributeInstance victimMaxHealth = victim.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+        AttributeInstance killerMaxHealth = killer.getAttribute(Attribute.MAX_HEALTH);
+        AttributeInstance victimMaxHealth = victim.getAttribute(Attribute.MAX_HEALTH);
 
         if (killerMaxHealth == null || victimMaxHealth == null) {
             return;
