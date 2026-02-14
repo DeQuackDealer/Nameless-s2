@@ -69,10 +69,10 @@ public class CreditCommand implements CommandExecutor, TabCompleter {
 
         Component githubLink = Component.text("  GitHub: ")
                 .color(NamedTextColor.GRAY)
-                .append(Component.text("DeQuackDealer/NamelessSMPPlugin")
+                .append(Component.text("DeQuackDealer/Nameless-Plugins")
                         .color(NamedTextColor.AQUA)
                         .decoration(TextDecoration.UNDERLINED, true)
-                        .clickEvent(ClickEvent.openUrl("https://github.com/DeQuackDealer/NamelessSMPPlugin"))
+                        .clickEvent(ClickEvent.openUrl("https://github.com/DeQuackDealer/Nameless-Plugins"))
                         .hoverEvent(HoverEvent.showText(Component.text("Click to open GitHub")
                                 .color(NamedTextColor.YELLOW))));
         sender.sendMessage(githubLink);
@@ -94,18 +94,13 @@ public class CreditCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Component.text("   - Lifesteal Sword")
                 .color(NamedTextColor.DARK_RED));
         sender.sendMessage(Component.text("   - Swap Rod")
-                .color(NamedTextColor.GOLD));
-        sender.sendMessage(Component.text("   - Diamond Apple (Diamond Hearts)")
+                .color(NamedTextColor.DARK_PURPLE));
+        sender.sendMessage(Component.text("   - Diamond Apple")
                 .color(NamedTextColor.AQUA));
         sender.sendMessage(Component.text("   - Upgradeable Spear System")
                 .color(NamedTextColor.GREEN));
-
-        sender.sendMessage(Component.empty());
-
-        Component hireMe = Component.text("  Open for commissions! DM on Discord")
-                .color(NamedTextColor.LIGHT_PURPLE)
-                .decoration(TextDecoration.ITALIC, true);
-        sender.sendMessage(hireMe);
+        sender.sendMessage(Component.text("   - Enchant Blocker")
+                .color(NamedTextColor.GOLD));
 
         sender.sendMessage(Component.empty());
 
@@ -137,11 +132,13 @@ public class CreditCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Component.text("LIFESTEAL SWORD")
                 .color(NamedTextColor.DARK_RED)
                 .decoration(TextDecoration.BOLD, true));
-        sender.sendMessage(Component.text("  Heals 50% of damage dealt")
+        sender.sendMessage(Component.text("  Permanently steals hearts from players you kill")
                 .color(NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("  9 Attack Damage, 3 Knockback")
+        sender.sendMessage(Component.text("  Victim loses the same hearts you gain")
                 .color(NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("  25s cooldown after 10 hits")
+        sender.sendMessage(Component.text("  Max 3 hearts stolen per player, 10 bonus hearts total")
+                .color(NamedTextColor.DARK_GRAY));
+        sender.sendMessage(Component.text("  Use /withdraw to convert a heart into a Life Star")
                 .color(NamedTextColor.DARK_GRAY));
         sender.sendMessage(Component.text("  Recipe: 2 Netherite Ingots + Blaze Rod")
                 .color(NamedTextColor.YELLOW));
@@ -149,11 +146,13 @@ public class CreditCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Component.empty());
 
         sender.sendMessage(Component.text("SWAP ROD")
-                .color(NamedTextColor.GOLD)
+                .color(NamedTextColor.DARK_PURPLE)
                 .decoration(TextDecoration.BOLD, true));
-        sender.sendMessage(Component.text("  Swaps positions with hooked entities")
+        sender.sendMessage(Component.text("  Right-click to swap positions with a targeted entity")
                 .color(NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("  Recipe: 2 Ender Pearls + Fishing Rod")
+        sender.sendMessage(Component.text("  20 block range, unbreakable, limit 1 per player")
+                .color(NamedTextColor.DARK_GRAY));
+        sender.sendMessage(Component.text("  Recipe: 2 Netherite Ingots + Blaze Rod (diagonal)")
                 .color(NamedTextColor.YELLOW));
 
         sender.sendMessage(Component.empty());
@@ -161,11 +160,11 @@ public class CreditCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(Component.text("DIAMOND APPLE")
                 .color(NamedTextColor.AQUA)
                 .decoration(TextDecoration.BOLD, true));
-        sender.sendMessage(Component.text("  Grants 3 Diamond Hearts that absorb damage")
+        sender.sendMessage(Component.text("  Grants 8 stacking absorption hearts")
                 .color(NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("  When a heart is fully depleted, repairs 100 armor durability")
-                .color(NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("  Also grants Regen III, Resistance II, Strength II, Fire Res")
+        sender.sendMessage(Component.text("  Regen III, Resistance II, Strength III, Speed II, Fire Res")
+                .color(NamedTextColor.DARK_GRAY));
+        sender.sendMessage(Component.text("  All effects configurable in config.yml")
                 .color(NamedTextColor.DARK_GRAY));
         sender.sendMessage(Component.text("  Recipe: 8 Diamond Blocks + Golden Apple")
                 .color(NamedTextColor.YELLOW));
@@ -177,12 +176,24 @@ public class CreditCommand implements CommandExecutor, TabCompleter {
                 .decoration(TextDecoration.BOLD, true));
         sender.sendMessage(Component.text("  Upgrades through tiers by killing players")
                 .color(NamedTextColor.GRAY));
-        sender.sendMessage(Component.text("  Wood -> Copper -> Iron -> Diamond -> Netherite")
+        sender.sendMessage(Component.text("  Wood -> Copper -> Iron -> Diamond (via kills)")
+                .color(NamedTextColor.GRAY));
+        sender.sendMessage(Component.text("  Diamond -> Netherite (via smithing table)")
                 .color(NamedTextColor.GRAY));
         sender.sendMessage(Component.text("  Dying with a spear downgrades it one tier")
                 .color(NamedTextColor.RED));
-        sender.sendMessage(Component.text("  Given to new players on first join")
-                .color(NamedTextColor.YELLOW));
+        sender.sendMessage(Component.text("  Melee only, limit 1 per player")
+                .color(NamedTextColor.DARK_GRAY));
+
+        sender.sendMessage(Component.empty());
+
+        sender.sendMessage(Component.text("ENCHANT BLOCKER")
+                .color(NamedTextColor.GOLD)
+                .decoration(TextDecoration.BOLD, true));
+        sender.sendMessage(Component.text("  /enchantblock - toggles enchanting table block on held item")
+                .color(NamedTextColor.GRAY));
+        sender.sendMessage(Component.text("  Blocked items cannot be enchanted in enchanting tables")
+                .color(NamedTextColor.DARK_GRAY));
 
         sender.sendMessage(Component.empty());
     }
