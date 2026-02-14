@@ -6,7 +6,7 @@
 
     <groupId>me.namelesss2</groupId>
     <artifactId>Nameless-s2</artifactId>
-    <version>1.2.1</version>
+    <version>2.0.0</version>
     <packaging>jar</packaging>
 
     <name>Nameless-s2</name>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>io.papermc.paper</groupId>
             <artifactId>paper-api</artifactId>
-            <version>1.21-R0.1-SNAPSHOT</version>
+            <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
